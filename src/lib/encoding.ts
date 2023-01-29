@@ -54,15 +54,15 @@ const STOP = 0x01;
 function bytesToFields(bytes: Uint8Array) {
   // we encode 248 bits (31 bytes) at a time into one field element
   let fields = [];
-  let currentBigInt = 0n;
-  let bitPosition = 0n;
+  let currentBigInt = BigInt(0);
+  let bitPosition = BigInt(0);
   for (let byte of bytes) {
     currentBigInt += BigInt(byte) << bitPosition;
-    bitPosition += 8n;
-    if (bitPosition === 248n) {
+    bitPosition += BigInt(8);
+    if (bitPosition === BigInt(248)) {
       fields.push(Field(currentBigInt.toString()));
-      currentBigInt = 0n;
-      bitPosition = 0n;
+      currentBigInt = BigInt(0);
+      bitPosition = BigInt(0);
     }
   }
   // encode the final chunk, with an added STOP byte to make the mapping invertible
@@ -99,10 +99,10 @@ function bytesFromFields(fields: Field[]) {
 // another caveat: the algorithm is O(n^(1 + t)) with t > 0; ~1MB of field elements take about 1-2s to convert
 
 // this needs the exact field size
-let p = 0x40000000000000000000000000000000224698fc094cf91b992d30ed00000001n;
-let q = 0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000001n;
+let p = BigInt("0x40000000000000000000000000000000224698fc094cf91b992d30ed00000001");
+let q = BigInt("0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000001");
 let bytesPerBigInt = 32;
-let bytesBase = 256n ** BigInt(bytesPerBigInt);
+let bytesBase = BigInt(256) ** BigInt(bytesPerBigInt);
 
 const Bijective = {
   Fp: {
@@ -165,8 +165,8 @@ function bigIntToField(x: bigint) {
 
 function bigIntToBytes(x: bigint, length: number) {
   let bytes = [];
-  for (; x > 0; x >>= 8n) {
-    bytes.push(Number(x & 0xffn));
+  for (; x > 0; x >>= BigInt(8)) {
+    bytes.push(Number(x & BigInt(0xff)));
   }
   let array = new Uint8Array(bytes);
   if (length === undefined) return array;

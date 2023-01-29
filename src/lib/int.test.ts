@@ -59,7 +59,7 @@ describe('int', () => {
       });
 
       it('should be the same as UInt64.MAXINT', async () => {
-        expect(Int64.from((1n << 64n) - 1n)).toEqual(
+        expect(Int64.from((BigInt(1) << BigInt(64)) - BigInt(1))).toEqual(
           Int64.fromUnsigned(UInt64.MAXINT())
         );
       });
@@ -90,7 +90,7 @@ describe('int', () => {
       });
 
       it('(MAXINT/2+MAXINT/2) adds to MAXINT', () => {
-        const value = ((1n << 64n) - 2n) / 2n;
+        const value = ((BigInt(1) << BigInt(64)) - BigInt(2)) / BigInt(2);
         expect(
           Int64.from(value).add(Int64.from(value)).add(Int64.one).toString()
         ).toEqual(UInt64.MAXINT().toString());
@@ -98,19 +98,19 @@ describe('int', () => {
 
       it('should throw on overflow', () => {
         expect(() => {
-          Int64.from(1n << 64n);
+          Int64.from(BigInt(1) << BigInt(64));
         }).toThrow();
         expect(() => {
-          Int64.from(-(1n << 64n));
+          Int64.from(-(BigInt(1) << BigInt(64)));
         }).toThrow();
         expect(() => {
-          Int64.from(100).add(1n << 64n);
+          Int64.from(100).add(BigInt(1) << BigInt(64));
         }).toThrow();
         expect(() => {
           Int64.from(100).sub('1180591620717411303424');
         }).toThrow();
         expect(() => {
-          Int64.from(100).mul(UInt64.from(Field(1n << 100n)));
+          Int64.from(100).mul(UInt64.from(Field(BigInt(1) << BigInt(100))));
         }).toThrow();
       });
 
@@ -121,30 +121,30 @@ describe('int', () => {
       // which breaks out current practice of having a dumb constructor that only stores variables
       it.skip('operations should throw on overflow of any input', () => {
         expect(() => {
-          new Int64(new UInt64(Field(1n << 64n))).sub(1);
+          new Int64(new UInt64(Field(BigInt(1) << BigInt(64)))).sub(1);
         }).toThrow();
         expect(() => {
-          new Int64(new UInt64(Field(-(1n << 64n)))).add(5);
+          new Int64(new UInt64(Field(-(BigInt(1) << BigInt(64))))).add(5);
         }).toThrow();
         expect(() => {
-          Int64.from(20).sub(new UInt64(Field((1n << 64n) + 10n)));
+          Int64.from(20).sub(new UInt64(Field((BigInt(1) << BigInt(64)) + BigInt(10))));
         }).toThrow();
         expect(() => {
-          Int64.from(6).add(new UInt64(Field(-(1n << 64n) - 5n)));
+          Int64.from(6).add(new UInt64(Field(-(BigInt(1) << BigInt(64)) - BigInt(5))));
         }).toThrow();
       });
 
       it('should throw on overflow addition', () => {
         expect(() => {
-          Int64.from((1n << 64n) - 1n).add(1);
+          Int64.from((BigInt(1) << BigInt(64)) - BigInt(1)).add(1);
         }).toThrow();
         expect(() => {
-          Int64.one.add((1n << 64n) - 1n);
+          Int64.one.add((BigInt(1) << BigInt(64)) - BigInt(1));
         }).toThrow();
       });
       it('should not throw on non-overflowing addition', () => {
         expect(() => {
-          Int64.from((1n << 64n) - 1n).add(Int64.zero);
+          Int64.from((BigInt(1) << BigInt(64)) - BigInt(1)).add(Int64.zero);
         }).not.toThrow();
       });
     });
@@ -201,7 +201,7 @@ describe('int', () => {
         let x = Int64.fromField(Field(2))
           .mul(2)
           .mul('2')
-          .mul(2n)
+          .mul(BigInt(2))
           .mul(UInt32.from(2))
           .mul(UInt64.from(2));
         expect(`${x}`).toBe('64');
@@ -245,7 +245,7 @@ describe('int', () => {
         });
 
         it('(MAXINT/2+MAXINT/2) adds to MAXINT', () => {
-          const n = Field((((1n << 64n) - 2n) / 2n).toString());
+          const n = Field((((BigInt(1) << BigInt(64)) - BigInt(2)) / BigInt(2)).toString());
           expect(() => {
             Circuit.runAndCheck(() => {
               const x = Circuit.witness(UInt64, () => new UInt64(n));
@@ -761,7 +761,7 @@ describe('int', () => {
         });
 
         it('(MAXINT/2+MAXINT/2) adds to MAXINT', () => {
-          const value = Field((((1n << 64n) - 2n) / 2n).toString());
+          const value = Field((((BigInt(1) << BigInt(64)) - BigInt(2)) / BigInt(2)).toString());
           expect(
             new UInt64(value)
               .add(new UInt64(value))
@@ -1146,7 +1146,7 @@ describe('int', () => {
         });
 
         it('should throw checking over MAXINT', () => {
-          const aboveMax = new UInt64(Field((1n << 64n).toString())); // This number is defined in UInt64.MAXINT()
+          const aboveMax = new UInt64(Field((BigInt(1) << BigInt(64)).toString())); // This number is defined in UInt64.MAXINT()
           expect(() => {
             UInt64.check(aboveMax);
           }).toThrow();
@@ -1206,7 +1206,7 @@ describe('int', () => {
         });
 
         it('(MAXINT/2+MAXINT/2) adds to MAXINT', () => {
-          const n = Field((((1n << 32n) - 2n) / 2n).toString());
+          const n = Field((((BigInt(1) << BigInt(32)) - BigInt(2)) / BigInt(2)).toString());
           expect(() => {
             Circuit.runAndCheck(() => {
               const x = Circuit.witness(UInt32, () => new UInt32(n));
@@ -1722,7 +1722,7 @@ describe('int', () => {
         });
 
         it('(MAXINT/2+MAXINT/2) adds to MAXINT', () => {
-          const value = Field((((1n << 32n) - 2n) / 2n).toString());
+          const value = Field((((BigInt(1) << BigInt(32)) - BigInt(2)) / BigInt(2)).toString());
           expect(
             new UInt32(value)
               .add(new UInt32(value))
@@ -2107,7 +2107,7 @@ describe('int', () => {
         });
 
         it('should throw checking over MAXINT', () => {
-          const x = new UInt32(Field((1n << 32n).toString())); // This number is defined in UInt32.MAXINT()
+          const x = new UInt32(Field((BigInt(1) << BigInt(32)).toString())); // This number is defined in UInt32.MAXINT()
           expect(() => {
             UInt32.check(x);
           }).toThrow();

@@ -42,7 +42,7 @@ describe('group', () => {
       });
 
       it('((2^64/2)+(2^64/2)) does not throw', () => {
-        const v = Field(((1n << 64n) - 2n).toString());
+        const v = Field(((BigInt(1) << BigInt(64)) - BigInt(2)).toString());
         expect(() => {
           Circuit.runAndCheck(() => {
             const x = Circuit.witness(Group, () => new Group(v, v));
@@ -250,7 +250,7 @@ describe('group', () => {
 
       it('((2^64/2)+(2^64/2)) does not throw', () => {
         expect(() => {
-          const v = Field(((1n << 64n) - 2n).toString());
+          const v = Field(((BigInt(1) << BigInt(64)) - BigInt(2)).toString());
           const x = new Group(v, v);
           const y = new Group(v, v);
           x.add(y);

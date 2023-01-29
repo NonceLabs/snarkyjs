@@ -5,30 +5,30 @@ export { Pallas, Vesta, GroupAffine, GroupProjective };
 // TODO: constants, like generator points and cube roots for endomorphisms, should be drawn from
 // a common source, i.e. generated from the Rust code
 const pallasGeneratorProjective = {
-  x: 1n,
-  y: 12418654782883325593414442427049395787963493412651469444558597405572177144507n,
-  z: 1n,
+  x: BigInt(1),
+  y: BigInt("12418654782883325593414442427049395787963493412651469444558597405572177144507"),
+  z: BigInt(1),
 };
 const vestaGeneratorProjective = {
-  x: 1n,
-  y: 11426906929455361843568202299992114520848200991084027513389447476559454104162n,
-  z: 1n,
+  x: BigInt(1),
+  y: BigInt("11426906929455361843568202299992114520848200991084027513389447476559454104162"),
+  z: BigInt(1),
 };
 
 type GroupProjective = { x: bigint; y: bigint; z: bigint };
 type GroupAffine = { x: bigint; y: bigint; infinity: boolean };
 
 function projectiveZero() {
-  return { x: 1n, y: 1n, z: 0n };
+  return { x: BigInt(1), y: BigInt(1), z: BigInt(0) };
 }
 
 function projectiveNeg({ x, y, z }: GroupProjective, p: bigint) {
-  return { x, y: y === 0n ? 0n : p - y, z };
+  return { x, y: y === BigInt(0) ? BigInt(0) : p - y, z };
 }
 
 function projectiveAdd(g: GroupProjective, h: GroupProjective, p: bigint) {
-  if (g.z === 0n) return h;
-  if (h.z === 0n) return g;
+  if (g.z === BigInt(0)) return h;
+  if (h.z === BigInt(0)) return g;
   let X1 = g.x,
     Y1 = g.y,
     Z1 = g.z,
@@ -51,24 +51,24 @@ function projectiveAdd(g: GroupProjective, h: GroupProjective, p: bigint) {
   // H = U2-U1
   let H = U2 - U1;
   // I = (2*H)^2
-  let I = mod((H * H) << 2n, p);
+  let I = mod((H * H) << BigInt(2), p);
   // J = H*I
   let J = mod(H * I, p);
   // r = 2*(S2-S1)
-  let r = 2n * (S2 - S1);
+  let r = BigInt(2) * (S2 - S1);
   // V = U1*I
   let V = mod(U1 * I, p);
   // X3 = r^2-J-2*V
-  let X3 = mod(r * r - J - 2n * V, p);
+  let X3 = mod(r * r - J - BigInt(2) * V, p);
   // Y3 = r*(V-X3)-2*S1*J
-  let Y3 = mod(r * (V - X3) - 2n * S1 * J, p);
+  let Y3 = mod(r * (V - X3) - BigInt(2) * S1 * J, p);
   // Z3 = ((Z1+Z2)^2-Z1Z1-Z2Z2)*H
   let Z3 = mod(((Z1 + Z2) * (Z1 + Z2) - Z1Z1 - Z2Z2) * H, p);
   return { x: X3, y: Y3, z: Z3 };
 }
 
 function projectiveDouble(g: GroupProjective, p: bigint) {
-  if (g.z === 0n) return g;
+  if (g.z === BigInt(0)) return g;
   let X1 = g.x,
     Y1 = g.y,
     Z1 = g.z;
@@ -81,17 +81,17 @@ function projectiveDouble(g: GroupProjective, p: bigint) {
   // C = B^2
   let C = mod(B * B, p);
   // D = 2*((X1+B)^2-A-C)
-  let D = mod(2n * ((X1 + B) * (X1 + B) - A - C), p);
+  let D = mod(BigInt(2) * ((X1 + B) * (X1 + B) - A - C), p);
   // E = 3*A
   let E = 3n * A;
   // F = E^2
   let F = mod(E * E, p);
   // X3 = F-2*D
-  let X3 = mod(F - 2n * D, p);
+  let X3 = mod(F - BigInt(2) * D, p);
   // Y3 = E*(D-X3)-8*C
-  let Y3 = mod(E * (D - X3) - 8n * C, p);
+  let Y3 = mod(E * (D - X3) - BigInt(8) * C, p);
   // Z3 = 2*Y1*Z1
-  let Z3 = mod(2n * Y1 * Z1, p);
+  let Z3 = mod(BigInt(2) * Y1 * Z1, p);
   return { x: X3, y: Y3, z: Z3 };
 }
 
@@ -101,20 +101,20 @@ function projectiveSub(g: GroupProjective, h: GroupProjective, p: bigint) {
 
 function projectiveScale(g: GroupProjective, x: bigint, p: bigint) {
   let h = projectiveZero();
-  while (x > 0n) {
-    if (x & 1n) h = projectiveAdd(h, g, p);
+  while (x > BigInt(0)) {
+    if (x & BigInt(1)) h = projectiveAdd(h, g, p);
     g = projectiveDouble(g, p);
-    x >>= 1n;
+    x >>= BigInt(1);
   }
   return h;
 }
 
 function projectiveToAffine(g: GroupProjective, p: bigint): GroupAffine {
   let z = g.z;
-  if (z === 0n) {
+  if (z === BigInt(0)) {
     // infinity
-    return { x: 1n, y: 1n, infinity: true };
-  } else if (z === 1n) {
+    return { x: BigInt(1), y: BigInt(1), infinity: true };
+  } else if (z === BigInt(1)) {
     // already normalized affine form
     return { x: g.x, y: g.y, infinity: false };
   } else {
@@ -155,7 +155,7 @@ function createCurveProjective(
       return projectiveToAffine(g, p);
     },
     ofAffine({ x, y }: GroupAffine) {
-      return { x, y, z: 1n };
+      return { x, y, z: BigInt(1) };
     },
   };
 }

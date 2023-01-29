@@ -64,20 +64,20 @@ let amountTooLarge = {
   common: validPayment.common,
   body: {
     ...validPayment.body,
-    amount: (2n ** 64n).toString(),
+    amount: (BigInt(2) ** BigInt(64)).toString(),
   },
 };
 let invalidPublicKey: PaymentJson = {
   common: validPayment.common,
   body: {
     ...validPayment.body,
-    source: PublicKey.toBase58({ x: 0n, isOdd: 0n }),
+    source: PublicKey.toBase58({ x: BigInt(0), isOdd: BigInt(0) }),
   },
 };
 let signature = Signature.toBase58({ r: Field.random(), s: Scalar.random() });
 
 expect(() => signPayment(amountTooLarge, privateKey, 'mainnet')).toThrow(
-  `inputs larger than ${2n ** 64n - 1n} are not allowed`
+  `inputs larger than ${BigInt(2) ** BigInt(64) - BigInt(1)} are not allowed`
 );
 expect(verifyPayment(amountTooLarge, signature, publicKey, 'mainnet')).toEqual(
   false

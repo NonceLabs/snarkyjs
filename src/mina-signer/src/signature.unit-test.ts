@@ -95,7 +95,7 @@ for (let i = 0; i < 10; i++) {
   let publicKey = PrivateKey.toPublicKey(key);
 
   // hard coded single field elements
-  let hardcoded = [0n, 1n, 2n, p - 1n];
+  let hardcoded = [BigInt(0), BigInt(1), BigInt(2), p - BigInt(1)];
   for (let x of hardcoded) {
     checkConsistentSingle(x, key, keySnarky, publicKey);
   }
@@ -106,13 +106,13 @@ for (let i = 0; i < 10; i++) {
   }
   // hard-coded multi-element hash inputs
   let messages: HashInput[] = [
-    { fields: [0n, 0n, 0n] },
+    { fields: [BigInt(0), BigInt(0), BigInt(0)] },
     { fields: [4n, 20n, 120398120n] },
     {
-      fields: [1n, p - 1n],
+      fields: [BigInt(1), p - BigInt(1)],
       packed: [
-        [0n, 0],
-        [1n, 1],
+        [BigInt(0), 0],
+        [BigInt(1), 1],
       ],
     },
     {

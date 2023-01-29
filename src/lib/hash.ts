@@ -98,7 +98,7 @@ function packToFields({ fields = [], packed = [] }: HashInput) {
     currentSize += size;
     if (currentSize < 255) {
       currentPackedField = currentPackedField
-        .mul(Field(1n << BigInt(size)))
+        .mul(Field(BigInt(1) << BigInt(size)))
         .add(field);
     } else {
       packedBits.push(currentPackedField);

@@ -22,7 +22,7 @@ import {
 const tokenSymbol = 'TOKEN';
 
 class TokenContract extends SmartContract {
-  SUPPLY = UInt64.from(10n ** 18n);
+  SUPPLY = UInt64.from(BigInt(10) ** BigInt(18));
   @state(UInt64) totalAmountInCirculation = State<UInt64>();
 
   /**

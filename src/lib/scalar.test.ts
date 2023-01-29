@@ -212,9 +212,9 @@ describe('scalar', () => {
         });
 
         it('((2^64/2)+(2^64/2)) adds to 2^64', () => {
-          const v = (1n << 64n) - 2n;
-          const x = Scalar.fromJSON(String(v / 2n))!;
-          const y = Scalar.fromJSON(String(v / 2n))!;
+          const v = (BigInt(1) << BigInt(64)) - BigInt(2);
+          const x = Scalar.fromJSON(String(v / BigInt(2)))!;
+          const y = Scalar.fromJSON(String(v / BigInt(2)))!;
           expect(x.add(y).toJSON()).toEqual(String(v));
         });
       });
@@ -267,7 +267,7 @@ describe('scalar', () => {
         });
 
         it('(2^64-1)x1=(2^64-1)', () => {
-          const v = (1n << 64n) - 1n;
+          const v = (BigInt(1) << BigInt(64)) - BigInt(1);
           const x = Scalar.fromJSON(String(v))!;
           const y = Scalar.fromJSON(1)!;
           expect(x.mul(y).toJSON()).toEqual(String(v));
@@ -294,7 +294,7 @@ describe('scalar', () => {
         });
 
         it('(2^64-1)/1=(2^64-1)', () => {
-          const v = (1n << 64n) - 1n;
+          const v = (BigInt(1) << BigInt(64)) - BigInt(1);
           const x = Scalar.fromJSON(String(v))!;
           const y = Scalar.fromJSON(1)!;
           expect(x.div(y).toJSON()).toEqual(String(v));

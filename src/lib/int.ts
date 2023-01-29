@@ -64,7 +64,7 @@ class UInt64 extends CircuitValue {
   private static checkConstant(x: Field) {
     if (!x.isConstant()) return x;
     let xBig = x.toBigInt();
-    if (xBig < 0n || xBig >= 1n << BigInt(this.NUM_BITS)) {
+    if (xBig < BigInt(0) || xBig >= BigInt(1) << BigInt(this.NUM_BITS)) {
       throw Error(
         `UInt64: Expected number between 0 and 2^64 - 1, got ${xBig}`
       );
@@ -85,7 +85,7 @@ class UInt64 extends CircuitValue {
    * Creates a {@link UInt64} with a value of 18,446,744,073,709,551,615.
    */
   static MAXINT() {
-    return new UInt64(Field((1n << 64n) - 1n));
+    return new UInt64(Field((BigInt(1) << BigInt(64)) - BigInt(1)));
   }
 
   /**
@@ -404,7 +404,7 @@ class UInt32 extends CircuitValue {
   private static checkConstant(x: Field) {
     if (!x.isConstant()) return x;
     let xBig = x.toBigInt();
-    if (xBig < 0n || xBig >= 1n << BigInt(this.NUM_BITS)) {
+    if (xBig < BigInt(0) || xBig >= BigInt(1) << BigInt(this.NUM_BITS)) {
       throw Error(
         `UInt32: Expected number between 0 and 2^32 - 1, got ${xBig}`
       );
@@ -424,7 +424,7 @@ class UInt32 extends CircuitValue {
    * Creates a {@link UInt32} with a value of 4,294,967,295.
    */
   static MAXINT() {
-    return new UInt32(Field((1n << 32n) - 1n));
+    return new UInt32(Field((BigInt(1) << BigInt(32)) - BigInt(1)));
   }
   /**
    * Integer division with remainder.
@@ -754,7 +754,7 @@ class Int64 extends CircuitValue implements BalanceChange {
    * Does check if the {@link Field} is within range.
    */
   private static fromFieldUnchecked(x: Field) {
-    let TWO64 = 1n << 64n;
+    let TWO64 = BigInt(1) << BigInt(64);
     let xBigInt = x.toBigInt();
     let isValidPositive = xBigInt < TWO64; // covers {0,...,2^64 - 1}
     let isValidNegative = Field.ORDER - xBigInt < TWO64; // {-2^64 + 1,...,-1}

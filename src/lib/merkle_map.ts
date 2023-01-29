@@ -38,10 +38,10 @@ export class MerkleMap {
       .reverse()
       .map((b) => b.toBoolean());
 
-    let n = 0n;
+    let n = BigInt(0);
     for (let i = 0; i < keyBits.length; i++) {
       const b = keyBits[i] ? 1 : 0;
-      n += 2n ** BigInt(i) * BigInt(b);
+      n += BigInt(2) ** BigInt(i) * BigInt(b);
     }
 
     return n;

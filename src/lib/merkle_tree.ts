@@ -52,7 +52,7 @@ class MerkleTree {
    * @returns The root of the Merkle Tree.
    */
   getRoot(): Field {
-    return this.getNode(this.height - 1, 0n);
+    return this.getNode(this.height - 1, BigInt(0));
   }
 
   // TODO: this allows to set a node at an index larger than the size. OK?
@@ -75,10 +75,10 @@ class MerkleTree {
     this.setNode(0, index, leaf);
     let currIndex = index;
     for (let level = 1; level < this.height; level++) {
-      currIndex /= 2n;
+      currIndex /= BigInt(2);
 
-      const left = this.getNode(level - 1, currIndex * 2n);
-      const right = this.getNode(level - 1, currIndex * 2n + 1n);
+      const left = this.getNode(level - 1, currIndex * BigInt(2));
+      const right = this.getNode(level - 1, currIndex * BigInt(2) + BigInt(1));
 
       this.setNode(level, currIndex, Poseidon.hash([left, right]));
     }
@@ -97,10 +97,10 @@ class MerkleTree {
     }
     const witness = [];
     for (let level = 0; level < this.height - 1; level++) {
-      const isLeft = index % 2n === 0n;
-      const sibling = this.getNode(level, isLeft ? index + 1n : index - 1n);
+      const isLeft = index % BigInt(2) === BigInt(0);
+      const sibling = this.getNode(level, isLeft ? index + BigInt(1) : index - BigInt(1));
       witness.push({ isLeft, sibling });
-      index /= 2n;
+      index /= BigInt(2);
     }
     return witness;
   }
@@ -139,7 +139,7 @@ class MerkleTree {
    * @returns Amount of leaf nodes.
    */
   get leafCount(): bigint {
-    return 2n ** BigInt(this.height - 1);
+    return BigInt(2) ** BigInt(this.height - 1);
   }
 }
 

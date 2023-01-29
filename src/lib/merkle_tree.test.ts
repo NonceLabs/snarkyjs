@@ -22,8 +22,8 @@ describe('Merkle Tree', () => {
 
   it('root is correct', () => {
     const tree = new MerkleTree(2);
-    tree.setLeaf(0n, Field(1));
-    tree.setLeaf(1n, Field(2));
+    tree.setLeaf(BigInt(0), Field(1));
+    tree.setLeaf(BigInt(1), Field(2));
     expect(tree.getRoot().toString()).toEqual(
       Poseidon.hash([Field(1), Field(2)]).toString()
     );
@@ -31,19 +31,19 @@ describe('Merkle Tree', () => {
 
   it('builds correct tree', () => {
     const tree = new MerkleTree(4);
-    tree.setLeaf(0n, Field(1));
-    tree.setLeaf(1n, Field(2));
-    tree.setLeaf(2n, Field(3));
-    expect(tree.validate(0n)).toBe(true);
-    expect(tree.validate(1n)).toBe(true);
-    expect(tree.validate(2n)).toBe(true);
-    expect(tree.validate(3n)).toBe(true);
+    tree.setLeaf(BigInt(0), Field(1));
+    tree.setLeaf(BigInt(1), Field(2));
+    tree.setLeaf(BigInt(2), Field(3));
+    expect(tree.validate(BigInt(0))).toBe(true);
+    expect(tree.validate(BigInt(1))).toBe(true);
+    expect(tree.validate(BigInt(2))).toBe(true);
+    expect(tree.validate(BigInt(3))).toBe(true);
   });
 
   it('tree of height 128', () => {
     const tree = new MerkleTree(128);
 
-    const index = 2n ** 64n;
+    const index = BigInt(2) ** BigInt(64);
     expect(tree.validate(index)).toBe(true);
 
     tree.setLeaf(index, Field(1));
@@ -53,7 +53,7 @@ describe('Merkle Tree', () => {
   it('tree of height 256', () => {
     const tree = new MerkleTree(256);
 
-    const index = 2n ** 128n;
+    const index = BigInt(2) ** BigInt(128);
     expect(tree.validate(index)).toBe(true);
 
     tree.setLeaf(index, Field(1));
@@ -70,7 +70,7 @@ describe('Merkle Tree', () => {
     tree.fill([15, 16, 17, 18].map(Field));
 
     // witness for the leaf '17', at index 2
-    let witness = new MyMerkleWitness(tree.getWitness(2n));
+    let witness = new MyMerkleWitness(tree.getWitness(BigInt(2)));
 
     // calculate index
     expect(witness.calculateIndex().toString()).toEqual('2');

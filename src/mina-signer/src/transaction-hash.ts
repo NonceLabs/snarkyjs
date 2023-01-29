@@ -191,10 +191,10 @@ function hashSignedCommandV1(command: SignedCommandV1) {
 
 function userCommandToV1({ common, body }: UserCommand): UserCommandV1 {
   let { tag: type, ...value } = body;
-  let commonV1: CommonV1 = { ...common, feeToken: 1n };
+  let commonV1: CommonV1 = { ...common, feeToken: BigInt(1) };
   switch (type) {
     case 'Payment':
-      let paymentV1: PaymentV1 = { ...value, tokenId: 1n };
+      let paymentV1: PaymentV1 = { ...value, tokenId: BigInt(1) };
       return { common: commonV1, body: { type, value: paymentV1 } };
     case 'StakeDelegation':
       let { source: delegator, receiver: newDelegate } = value;

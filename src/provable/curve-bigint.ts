@@ -61,7 +61,7 @@ let BinablePublicKey = withVersionNumber(
     record({ x: FieldWithVersion, isOdd: Bool }, ['x', 'isOdd']),
     ({ x }) => {
       let { mul, add } = Field;
-      let ySquared = add(mul(x, mul(x, x)), 5n);
+      let ySquared = add(mul(x, mul(x, x)), BigInt(5));
       if (!Field.isSquare(ySquared)) {
         throw Error('PublicKey: not a valid group element');
       }
@@ -86,16 +86,16 @@ const PublicKey = {
 
   toGroup({ x, isOdd }: PublicKey): Group {
     let { mul, add } = Field;
-    let ySquared = add(mul(x, mul(x, x)), 5n);
+    let ySquared = add(mul(x, mul(x, x)), BigInt(5));
     let y = Field.sqrt(ySquared);
     if (y === undefined) {
       throw Error('PublicKey.toGroup: not a valid group element');
     }
-    if (isOdd !== (y & 1n)) y = Field.negate(y);
+    if (isOdd !== (y & BigInt(1))) y = Field.negate(y);
     return { x, y };
   },
   fromGroup({ x, y }: Group): PublicKey {
-    let isOdd = (y & 1n) as Bool;
+    let isOdd = (y & BigInt(1)) as Bool;
     return { x, isOdd };
   },
 
@@ -104,7 +104,7 @@ const PublicKey = {
   },
 };
 
-const checkScalar = checkRange(0n, Fq.modulus, 'Scalar');
+const checkScalar = checkRange(BigInt(0), Fq.modulus, 'Scalar');
 
 /**
  * The scalar field of the Pallas curve

@@ -70,7 +70,7 @@ let dummySnarky = AccountUpdateSnarky.dummy();
 expect(AccountUpdate.toJSON(dummy)).toEqual(
   AccountUpdateSnarky.toJSON(dummySnarky)
 );
-dummy.body.update.permissions.isSome = 1n; // have to special-case permissions, protocol uses something custom
+dummy.body.update.permissions.isSome = BigInt(1); // have to special-case permissions, protocol uses something custom
 dummySnarky.update.permissions.isSome = BoolSnarky(true);
 dummySnarky.update.permissions.value = PermissionsSnarky.dummy();
 let dummyInput = AccountUpdate.toInput(dummy);
@@ -118,8 +118,8 @@ let feePayerKeyBase58 = 'EKDkKHit3WxjQ8SBSnP9zK7qfLtdi28tEDrzLtskTNJi1gyESTZ1';
 let feePayerKeySnarky = PrivateKeySnarky.fromBase58(feePayerKeyBase58);
 let feePayerAddressSnarky = feePayerKeySnarky.toPublicKey();
 let feePayerAddress = PublicKey.fromJSON(feePayerAddressSnarky.toBase58());
-let nonce = 1n;
-let fee = 100_000_000n;
+let nonce = BigInt(1);
+let fee = BigInt(100000000);
 let memo = Memo.fromString('hello world');
 let memoBase58 = Memo.toBase58(memo);
 let memoBase581 = Ledger.memoToBase58('hello world');

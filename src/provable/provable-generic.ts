@@ -71,7 +71,7 @@ function createProvable<Field>(): ProvableConstructor<Field> {
       if (typeObj === Number) return [obj ?? 0];
       if (typeObj === String) return [obj ?? ''];
       if (typeObj === Boolean) return [obj ?? false];
-      if (typeObj === BigInt) return [obj ?? 0n];
+      if (typeObj === BigInt) return [obj ?? BigInt(0)];
       if (typeObj === undefined || typeObj === null) return [];
       if (Array.isArray(typeObj))
         return typeObj.map((t, i) => toAuxiliary(t, obj?.[i]));

@@ -6,20 +6,20 @@ export { Fp, Fq, FiniteField, p, q, mod, inverse };
 // CONSTANTS
 
 // the modulus. called `p` in most of our code.
-const p = 0x40000000000000000000000000000000224698fc094cf91b992d30ed00000001n;
-const q = 0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000001n;
+const p = BigInt("0x40000000000000000000000000000000224698fc094cf91b992d30ed00000001");
+const q = BigInt("0x40000000000000000000000000000000224698fc0994a8dd8c46eb2100000001");
 
 // this is `t`, where p = 2^32 * t + 1
 const pMinusOneOddFactor =
-  0x40000000000000000000000000000000224698fc094cf91b992d30edn;
+  BigInt("0x40000000000000000000000000000000224698fc094cf91b992d30ed");
 const qMinusOneOddFactor =
-  0x40000000000000000000000000000000224698fc0994a8dd8c46eb21n;
+  BigInt("0x40000000000000000000000000000000224698fc0994a8dd8c46eb21");
 
 // primitive roots of unity, computed as (5^t mod p). this works because 5 generates the multiplicative group mod p
 const twoadicRootFp =
-  0x2bce74deac30ebda362120830561f81aea322bf2b7bb7584bdad6fabd87ea32fn;
+  BigInt("0x2bce74deac30ebda362120830561f81aea322bf2b7bb7584bdad6fabd87ea32f");
 const twoadicRootFq =
-  0x2de6a9b8746d3f589e5c4dfd492ae26e9bb97ea3c106f049a70e2c1102b6d05fn;
+  BigInt("0x2de6a9b8746d3f589e5c4dfd492ae26e9bb97ea3c106f049a70e2c1102b6d05f");
 
 // GENERAL FINITE FIELD ALGORITHMS
 
@@ -32,9 +32,9 @@ function mod(x: bigint, p: bigint) {
 // modular exponentiation, a^n % p
 function power(a: bigint, n: bigint, p: bigint) {
   a = mod(a, p);
-  let x = 1n;
-  for (; n > 0n; n >>= 1n) {
-    if (n & 1n) x = mod(x * a, p);
+  let x = BigInt(1);
+  for (; n > BigInt(0); n >>= BigInt(1)) {
+    if (n & BigInt(1)) x = mod(x * a, p);
     a = mod(a * a, p);
   }
   return x;
@@ -43,13 +43,13 @@ function power(a: bigint, n: bigint, p: bigint) {
 // inverting with EGCD, 1/a in Z_p
 function inverse(a: bigint, p: bigint) {
   a = mod(a, p);
-  if (a === 0n) return undefined;
+  if (a === BigInt(0)) return undefined;
   let b = p;
-  let x = 0n;
-  let y = 1n;
-  let u = 1n;
-  let v = 0n;
-  while (a !== 0n) {
+  let x = BigInt(0);
+  let y = BigInt(1);
+  let u = BigInt(1);
+  let v = BigInt(0);
+  while (a !== BigInt(0)) {
     let q = b / a;
     let r = mod(b, a);
     let m = x - u * q;
@@ -61,7 +61,7 @@ function inverse(a: bigint, p: bigint) {
     u = m;
     v = n;
   }
-  if (b !== 1n) return undefined;
+  if (b !== BigInt(1)) return undefined;
   return mod(x, p);
 }
 
@@ -72,25 +72,25 @@ function sqrt(n: bigint, p: bigint, Q: bigint, z: bigint) {
   // variable naming is the same as in that link ^
   // Q is what we call `t` elsewhere - the odd factor in p - 1
   // z is a known non-square mod p. we pass in the primitive root of unity
-  let M = 32n;
+  let M = BigInt(32);
   let c =
     precomputed_c[p.toString()] ||
     (precomputed_c[p.toString()] = power(z, Q, p)); // z^Q
   // TODO: can we save work by sharing computation between t and R?
   let t = power(n, Q, p); // n^Q
-  let R = power(n, (Q + 1n) / 2n, p); // n^((Q + 1)/2)
+  let R = power(n, (Q + BigInt(1)) / BigInt(2), p); // n^((Q + 1)/2)
   while (true) {
-    if (t === 0n) return 0n;
-    if (t === 1n) return R;
+    if (t === BigInt(0)) return BigInt(0);
+    if (t === BigInt(1)) return R;
     // use repeated squaring to find the least i, 0 < i < M, such that t^(2^i) = 1
-    let i = 0n;
+    let i = BigInt(0);
     let s = t;
-    while (s !== 1n) {
+    while (s !== BigInt(1)) {
       s = mod(s * s, p);
-      i = i + 1n;
+      i = i + BigInt(1);
     }
     if (i === M) return undefined; // no solution
-    let b = power(c, 1n << (M - i - 1n), p); // c^(2^(M-i-1))
+    let b = power(c, BigInt(1) << (M - i - BigInt(1)), p); // c^(2^(M-i-1))
     M = i;
     c = mod(b * b, p);
     t = mod(t * c, p);
@@ -99,9 +99,9 @@ function sqrt(n: bigint, p: bigint, Q: bigint, z: bigint) {
 }
 
 function isSquare(x: bigint, p: bigint) {
-  if (x === 0n) return true;
-  let sqrt1 = power(x, (p - 1n) / 2n, p);
-  return sqrt1 === 1n;
+  if (x === BigInt(0)) return true;
+  let sqrt1 = power(x, (p - BigInt(1)) / BigInt(2), p);
+  return sqrt1 === BigInt(1);
 }
 
 function randomField(p: bigint) {
@@ -132,7 +132,7 @@ function createField(p: bigint, t: bigint, twoadicRoot: bigint) {
       return mod(x + y, p);
     },
     negate(x: bigint) {
-      return x === 0n ? 0n : p - x;
+      return x === BigInt(0) ? BigInt(0) : p - x;
     },
     sub(x: bigint, y: bigint) {
       return mod(x - y, p);
@@ -161,7 +161,7 @@ function createField(p: bigint, t: bigint, twoadicRoot: bigint) {
       return power(x, n, p);
     },
     dot(x: bigint[], y: bigint[]) {
-      let z = 0n;
+      let z = BigInt(0);
       let n = x.length;
       for (let i = 0; i < n; i++) {
         z += x[i] * y[i];
@@ -169,10 +169,10 @@ function createField(p: bigint, t: bigint, twoadicRoot: bigint) {
       return mod(z, p);
     },
     equal(x: bigint, y: bigint) {
-      return mod(x - y, p) === 0n;
+      return mod(x - y, p) === BigInt(0);
     },
     isEven(x: bigint) {
-      return !(x & 1n);
+      return !(x & BigInt(1));
     },
     random() {
       return randomField(p);
@@ -194,19 +194,19 @@ if (caml_bindings_debug) test();
 
 function test() {
   // t is computed correctly from p = 2^32 * t + 1
-  console.assert(pMinusOneOddFactor * (1n << 32n) + 1n === p);
+  console.assert(pMinusOneOddFactor * (BigInt(1) << BigInt(32)) + BigInt(1) === p);
 
   // the primitive root of unity is computed correctly as 5^t
-  let generator = 5n;
+  let generator = BigInt(5);
   let rootFp = power(generator, pMinusOneOddFactor, p);
   console.assert(rootFp === twoadicRootFp);
 
   // the primitive roots of unity `r` actually satisfy the equations defining them:
   // r^(2^32) = 1, r^(2^31) != 1
-  let shouldBe1 = power(twoadicRootFp, 1n << 32n, p);
-  let shouldBeMinus1 = power(twoadicRootFp, 1n << 31n, p);
-  console.assert(shouldBe1 === 1n);
-  console.assert(shouldBeMinus1 + 1n === p);
+  let shouldBe1 = power(twoadicRootFp, BigInt(1) << BigInt(32), p);
+  let shouldBeMinus1 = power(twoadicRootFp, BigInt(1) << BigInt(31), p);
+  console.assert(shouldBe1 === BigInt(1));
+  console.assert(shouldBeMinus1 + BigInt(1) === p);
 
   // the primitive roots of unity are non-squares
   // -> verifies that the two-adicity is 32, and that they can be used as non-squares in the sqrt algorithm

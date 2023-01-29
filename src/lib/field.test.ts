@@ -31,11 +31,11 @@ describe('Field constructor', () => {
   // Field(bigint), Field.fromBigInt, toBigInt
 
   it('handles bigints', () => {
-    expect(Field(-1n)).toEqual(Field(1).neg());
-    expect(Field(-1n)).toEqual(Field(-1));
-    expect(Field(Field.ORDER - 1n)).toEqual(Field(1).neg());
-    expect(Field(1n << 64n).toString()).toEqual('18446744073709551616');
-    expect(Field(1n << 64n)).toEqual(Field('18446744073709551616'));
+    expect(Field(BigInt(-1))).toEqual(Field(1).neg());
+    expect(Field(BigInt(-1))).toEqual(Field(-1));
+    expect(Field(Field.ORDER - BigInt(1))).toEqual(Field(1).neg());
+    expect(Field(BigInt(1) << BigInt(64)).toString()).toEqual('18446744073709551616');
+    expect(Field(BigInt(1) << BigInt(64))).toEqual(Field('18446744073709551616'));
   });
 
   // TODO Field(string), Field(boolean), Field(otherField)
@@ -43,9 +43,9 @@ describe('Field constructor', () => {
 
 describe('Field serialization and static props', () => {
   it('toBigInt works on static props', () => {
-    expect(Field(1).toBigInt()).toEqual(1n);
-    expect(Field(0).toBigInt()).toEqual(0n);
-    expect(Field(-1).toBigInt()).toEqual(Field.ORDER - 1n);
-    expect(Field(0xff).toBigInt()).toEqual(0xffn);
+    expect(Field(1).toBigInt()).toEqual(BigInt(1));
+    expect(Field(0).toBigInt()).toEqual(BigInt(0));
+    expect(Field(-1).toBigInt()).toEqual(Field.ORDER - BigInt(1));
+    expect(Field(0xff).toBigInt()).toEqual(BigInt(0xff));
   });
 });

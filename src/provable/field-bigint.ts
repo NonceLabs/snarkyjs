@@ -22,18 +22,16 @@ type UInt64 = bigint;
 
 const sizeInBits = Fp.sizeInBits;
 
-type minusOne =
-  0x40000000000000000000000000000000224698fc094cf91b992d30ed00000000n;
-const minusOne: minusOne =
-  0x40000000000000000000000000000000224698fc094cf91b992d30ed00000000n;
-type Sign = 1n | minusOne;
+type minusOne = 0x40000000000000000000000000000000224698fc094cf91b992d30ed00000000n;
+const minusOne: minusOne = 0x40000000000000000000000000000000224698fc094cf91b992d30ed00000000n;
+type Sign = 0n | minusOne;
 
 type HashInput = GenericHashInput<Field>;
 type ProvableExtended<T, J> = GenericProvableExtended<T, J, Field>;
 
-const checkField = checkRange(0n, Fp.modulus, 'Field');
-const checkBool = checkWhitelist(new Set([0n, 1n]), 'Bool');
-const checkSign = checkWhitelist(new Set([1n, minusOne]), 'Sign');
+const checkField = checkRange(BigInt(0), Fp.modulus, 'Field');
+const checkBool = checkWhitelist(new Set([BigInt(0), BigInt(1)]), 'Bool');
+const checkSign = checkWhitelist(new Set([BigInt(1), minusOne]), 'Sign');
 
 /**
  * The base field of the Pallas curve
@@ -78,14 +76,14 @@ const Bool = pseudoClass(
     },
     fromField(x: Field) {
       checkBool(x);
-      return x as 0n | 1n;
+      return x as BigInt(0) | BigInt(1);
     },
   }
 );
 
 function Unsigned(bits: number) {
-  let maxValue = (1n << BigInt(bits)) - 1n;
-  let checkUnsigned = checkRange(0n, 1n << BigInt(bits), `UInt${bits}`);
+  let maxValue = (BigInt(1) << BigInt(bits)) - BigInt(1);
+  let checkUnsigned = checkRange(BigInt(0), BigInt(1) << BigInt(bits), `UInt${bits}`);
 
   return pseudoClass(
     function Unsigned(value: bigint | number | string) {
@@ -116,23 +114,23 @@ const Sign = pseudoClass(
     ...ProvableBigint<Sign, 'Positive' | 'Negative'>(checkSign),
     ...BinableBigint<Sign>(1, checkSign),
     emptyValue() {
-      return 1n;
+      return BigInt(1);
     },
     toInput(x: Sign): HashInput {
-      return { fields: [], packed: [[x === 1n ? 1n : 0n, 1]] };
+      return { fields: [], packed: [[x === BigInt(1) ? BigInt(1) : BigInt(0), 1]] };
     },
     fromFields([x]: Field[]): Sign {
-      if (x === 0n) return 1n;
+      if (x === BigInt(0)) return BigInt(1);
       checkSign(x);
       return x as Sign;
     },
     toJSON(x: Sign) {
-      return x === 1n ? 'Positive' : 'Negative';
+      return x === BigInt(1) ? 'Positive' : 'Negative';
     },
     fromJSON(x: 'Positive' | 'Negative'): Sign {
       if (x !== 'Positive' && x !== 'Negative')
         throw Error('Sign: invalid input');
-      return x === 'Positive' ? 1n : minusOne;
+      return x === 'Positive' ? BigInt(1) : minusOne;
     },
   }
 );
@@ -191,12 +189,12 @@ function BinableBigint<T extends bigint = bigint>(
         return bigIntToBytes(x, sizeInBytes);
       },
       readBytes(bytes, start) {
-        let x = 0n;
-        let bitPosition = 0n;
+        let x = BigInt(0);
+        let bitPosition = BigInt(0);
         let end = Math.min(start + sizeInBytes, bytes.length);
         for (let i = start; i < end; i++) {
           x += BigInt(bytes[i]) << bitPosition;
-          bitPosition += 8n;
+          bitPosition += BigInt(8);
         }
         check(x);
         return [x as T, end];
@@ -216,7 +214,7 @@ function checkRange(lower: bigint, upper: bigint, name: string) {
       );
     if (x >= upper)
       throw Error(
-        `${name}: inputs larger than ${upper - 1n} are not allowed, got ${x}`
+        `${name}: inputs larger than ${upper - BigInt(1)} are not allowed, got ${x}`
       );
   };
 }

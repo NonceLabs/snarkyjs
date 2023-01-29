@@ -39,8 +39,8 @@ export {
   verifyLegacy,
 };
 
-const networkIdMainnet = 0x01n;
-const networkIdTestnet = 0x00n;
+const networkIdMainnet = BigInt(0x01);
+const networkIdTestnet = BigInt(0x00);
 type NetworkId = 'mainnet' | 'testnet';
 type Signature = { r: Field; s: Scalar };
 
@@ -104,7 +104,7 @@ function sign(
 ): Signature {
   let publicKey = Group.scale(Group.generatorMina, privateKey);
   let kPrime = deriveNonce(message, publicKey, privateKey, networkId);
-  if (Scalar.equal(kPrime, 0n)) throw Error('sign: derived nonce is 0');
+  if (Scalar.equal(kPrime, BigInt(0))) throw Error('sign: derived nonce is 0');
   let { x: rx, y: ry } = Group.scale(Group.generatorMina, kPrime);
   let k = Field.isEven(ry) ? kPrime : Scalar.negate(kPrime);
   let e = hashMessage(message, publicKey, rx, networkId);
@@ -221,7 +221,7 @@ function signLegacy(
 ): Signature {
   let publicKey = Group.scale(Group.generatorMina, privateKey);
   let kPrime = deriveNonceLegacy(message, publicKey, privateKey, networkId);
-  if (Scalar.equal(kPrime, 0n)) throw Error('sign: derived nonce is 0');
+  if (Scalar.equal(kPrime, BigInt(0))) throw Error('sign: derived nonce is 0');
   let { x: rx, y: ry } = Group.scale(Group.generatorMina, kPrime);
   let k = Field.isEven(ry) ? kPrime : Scalar.negate(kPrime);
   let e = hashMessageLegacy(message, publicKey, rx, networkId);

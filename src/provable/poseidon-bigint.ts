@@ -32,12 +32,12 @@ const HashLegacy = createHashHelpers(Field, PoseidonLegacy);
 function packToFields({ fields = [], packed = [] }: HashInput) {
   if (packed.length === 0) return fields;
   let packedBits = [];
-  let currentPackedField = 0n;
+  let currentPackedField = BigInt(0);
   let currentSize = 0;
   for (let [field, size] of packed) {
     currentSize += size;
     if (currentSize < 255) {
-      currentPackedField = currentPackedField * (1n << BigInt(size)) + field;
+      currentPackedField = currentPackedField * (BigInt(1) << BigInt(size)) + field;
     } else {
       packedBits.push(currentPackedField);
       currentSize = size;

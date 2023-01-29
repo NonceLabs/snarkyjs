@@ -1,11 +1,11 @@
 export { changeBase, bytesToBigInt, bigIntToBytes };
 
 function bytesToBigInt(bytes: Uint8Array | number[]) {
-  let x = 0n;
-  let bitPosition = 0n;
+  let x = BigInt(0);
+  let bitPosition = BigInt(0);
   for (let byte of bytes) {
     x += BigInt(byte) << bitPosition;
-    bitPosition += 8n;
+    bitPosition += BigInt(8);
   }
   return x;
 }
@@ -15,14 +15,14 @@ function bytesToBigInt(bytes: Uint8Array | number[]) {
  * Throws an error if the bigint doesn't fit in the given number of bytes.
  */
 function bigIntToBytes(x: bigint, length: number) {
-  if (x < 0n) {
+  if (x < BigInt(0)) {
     throw Error(`bigIntToBytes: negative numbers are not supported, got ${x}`);
   }
   let bytes: number[] = Array(length);
-  for (let i = 0; i < length; i++, x >>= 8n) {
-    bytes[i] = Number(x & 0xffn);
+  for (let i = 0; i < length; i++, x >>= BigInt(8)) {
+    bytes[i] = Number(x & BigInt(0xff));
   }
-  if (x > 0n) {
+  if (x > BigInt(0)) {
     throw Error(`bigIntToBytes: input does not fit in ${length} bytes`);
   }
   return bytes;
@@ -49,8 +49,8 @@ function changeBase(digits: bigint[], base: bigint, newBase: bigint) {
  *
  * naively, we could just accumulate digits from left to right:
  * ```
- * let x = 0n;
- * let p = 1n;
+ * let x = BigInt(0);
+ * let p = BigInt(1);
  * for (let i=0; i<n; i++) {
  *   x += X[i] * p;
  *   p *= base;
@@ -88,16 +88,16 @@ function changeBase(digits: bigint[], base: bigint, newBase: bigint) {
  * similar conclusions hold for `toBase`.
  */
 function fromBase(digits: bigint[], base: bigint) {
-  if (base <= 0n) throw Error('fromBase: base must be positive');
+  if (base <= BigInt(0)) throw Error('fromBase: base must be positive');
   // compute powers base, base^2, base^4, ..., base^(2^k)
   // with largest k s.t. n = 2^k < digits.length
   let basePowers = [];
-  for (let power = base, n = 1; n < digits.length; power **= 2n, n *= 2) {
+  for (let power = base, n = 1; n < digits.length; power **= BigInt(2), n *= 2) {
     basePowers.push(power);
   }
   let k = basePowers.length;
   // pad digits array with zeros s.t. digits.length === 2^k
-  digits = digits.concat(Array(2 ** k - digits.length).fill(0n));
+  digits = digits.concat(Array(2 ** k - digits.length).fill(BigInt(0)));
   // accumulate [x0, x1, x2, x3, ...] -> [x0 + base*x1, x2 + base*x3, ...] -> [x0 + base*x1 + base^2*(x2 + base*x3), ...] -> ...
   // until we end up with a single element
   for (let i = 0; i < k; i++) {
@@ -114,11 +114,11 @@ function fromBase(digits: bigint[], base: bigint) {
 }
 
 function toBase(x: bigint, base: bigint) {
-  if (base <= 0n) throw Error('toBase: base must be positive');
+  if (base <= BigInt(0)) throw Error('toBase: base must be positive');
   // compute powers base, base^2, base^4, ..., base^(2^k)
   // with largest k s.t. base^(2^k) < x
   let basePowers = [];
-  for (let power = base; power < x; power **= 2n) {
+  for (let power = base; power < x; power **= BigInt(2)) {
     basePowers.push(power);
   }
   let digits = [x]; // single digit w.r.t base^(2^(k+1))
@@ -137,7 +137,7 @@ function toBase(x: bigint, base: bigint) {
     digits = newDigits;
   }
   // pop "leading" zero digits
-  while (digits[digits.length - 1] === 0n) {
+  while (digits[digits.length - 1] === BigInt(0)) {
     digits.pop();
   }
   return digits;

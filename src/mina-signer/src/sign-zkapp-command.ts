@@ -97,7 +97,7 @@ function accountUpdateHash(update: AccountUpdate) {
 }
 
 function callForestHash(forest: CallForest): Field {
-  let stackHash = 0n;
+  let stackHash = BigInt(0);
   for (let callTree of [...forest].reverse()) {
     let calls = callForestHash(callTree.children);
     let treeHash = accountUpdateHash(callTree.accountUpdate);

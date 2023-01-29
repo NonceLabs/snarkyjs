@@ -51,9 +51,9 @@ function toBase58(bytes: number[] | Uint8Array) {
   // for some reason, this is big-endian, so we need to reverse
   let digits = [...bytes].map(BigInt).reverse();
   // change base and reverse
-  let base58Digits = changeBase(digits, 256n, 58n).reverse();
+  let base58Digits = changeBase(digits, BigInt(256), BigInt(58)).reverse();
   // add leading zeroes, map into alphabet
-  base58Digits = Array(z).fill(0n).concat(base58Digits);
+  base58Digits = Array(z).fill(BigInt(0)).concat(base58Digits);
   return base58Digits.map((x) => alphabet[Number(x)]).join('');
 }
 
@@ -64,9 +64,9 @@ function fromBase58(base58: string) {
     return BigInt(digit);
   });
   let z = 0;
-  while (base58Digits[z] === 0n) z++;
-  let digits = changeBase(base58Digits.reverse(), 58n, 256n).reverse();
-  digits = Array(z).fill(0n).concat(digits);
+  while (base58Digits[z] === BigInt(0)) z++;
+  let digits = changeBase(base58Digits.reverse(), BigInt(58), BigInt(256)).reverse();
+  digits = Array(z).fill(BigInt(0)).concat(digits);
   return digits.map(Number);
 }
 

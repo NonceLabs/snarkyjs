@@ -66,9 +66,9 @@ That means it can't be called in a @method or similar environment, and there's n
     );
   let x = bytesToBigInt(constantValue);
   let lowBitSize = BigInt(sizeInBits - 1);
-  let lowBitMask = (1n << lowBitSize) - 1n;
+  let lowBitMask = (BigInt(1) << lowBitSize) - BigInt(1);
   return {
     field: Field(x & lowBitMask),
-    highBit: Bool(x >> lowBitSize === 1n),
+    highBit: Bool(x >> lowBitSize === BigInt(1)),
   };
 };

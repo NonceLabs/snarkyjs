@@ -191,18 +191,18 @@ const CODE_INT64 = 0xfc;
 const BinableBigintInteger = defineBinable({
   toBytes(n: bigint) {
     if (n >= 0) {
-      if (n < 0x80n) return bigIntToBytes(n, 1);
-      if (n < 0x8000n) return [CODE_INT16, ...bigIntToBytes(n, 2)];
+      if (n < BigInt(0x80)) return bigIntToBytes(n, 1);
+      if (n < BigInt(0x8000)) return [CODE_INT16, ...bigIntToBytes(n, 2)];
       if (n < 0x80000000) return [CODE_INT32, ...bigIntToBytes(n, 4)];
       else return [CODE_INT64, ...bigIntToBytes(n, 8)];
     } else {
-      let M = 1n << 64n;
-      if (n >= -0x80n)
-        return [CODE_NEG_INT8, ...bigIntToBytes((M + n) & 0xffn, 1)];
-      if (n >= -0x8000n)
-        return [CODE_INT16, ...bigIntToBytes((M + n) & 0xffffn, 2)];
+      let M = BigInt(1) << BigInt(64);
+      if (n >= BigInt(-0x80))
+        return [CODE_NEG_INT8, ...bigIntToBytes((M + n) & BigInt(0xff), 1)];
+      if (n >= BigInt(-0x8000))
+        return [CODE_INT16, ...bigIntToBytes((M + n) & BigInt(0xffff), 2)];
       if (n >= -0x80000000)
-        return [CODE_INT32, ...bigIntToBytes((M + n) & 0xffff_ffffn, 4)];
+        return [CODE_INT32, ...bigIntToBytes((M + n) & BigInt(0xffffffff), 4)];
       else return [CODE_INT64, ...bigIntToBytes(M + n, 8)];
     }
   },
@@ -233,7 +233,7 @@ function fillInt64(startBytes: number[]) {
   // interpret result as a bigint > 0
   let x = bytesToBigInt(intBytes);
   // map from uint64 range to int64 range
-  if (x >= 1n << 63n) x -= 1n << 64n;
+  if (x >= BigInt(1) << BigInt(63)) x -= BigInt(1) << BigInt(64);
   return x;
 }
 

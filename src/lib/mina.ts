@@ -345,8 +345,8 @@ function LocalBlockchain({
   }[] = [];
 
   for (let i = 0; i < 10; ++i) {
-    let MINA = 10n ** 9n;
-    const largeValue = 1000n * MINA;
+    let MINA = BigInt(10) ** BigInt(9);
+    const largeValue = BigInt(1000) * MINA;
     const k = PrivateKey.random();
     const pk = k.toPublicKey();
     addAccount(pk, largeValue.toString());

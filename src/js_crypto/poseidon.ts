@@ -38,7 +38,7 @@ function createPoseidon(
   let mds = mds_.map((arr) => arr.map(BigInt));
 
   function initialState(): bigint[] {
-    return Array(stateSize).fill(0n);
+    return Array(stateSize).fill(BigInt(0));
   }
 
   function hash(input: bigint[]) {
@@ -54,7 +54,7 @@ function createPoseidon(
     }
     // pad input with zeros so its length is a multiple of the rate
     let n = Math.ceil(input.length / rate) * rate;
-    input = input.concat(Array(n - input.length).fill(0n));
+    input = input.concat(Array(n - input.length).fill(BigInt(0)));
     // for every block of length `rate`, add block to the first `rate` elements of the state, and apply the permutation
     for (let blockIndex = 0; blockIndex < n; blockIndex += rate) {
       for (let i = 0; i < rate; i++) {
